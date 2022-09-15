@@ -1,11 +1,15 @@
-import * as Actions from "../actions/actions";
+import * as Actions from "../actions";
 
 const initialState = {
-  products: [],
+  cart: [],
 };
 
 const cartReducer = (state = initialState, action) => {
   switch (action.type) {
+    case Actions.UPDATE_CART:
+      return state;
+    default:
+      return state;
   }
   // default: return state
 };

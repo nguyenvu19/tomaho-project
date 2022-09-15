@@ -19,12 +19,16 @@ import AddIcon from "@mui/icons-material/Add";
 import RemoveIcon from "@mui/icons-material/Remove";
 import Input from "antd/lib/input/Input";
 import "./index.css";
+import * as Actions from "../../redux/actions";
+import { useNavigate } from "react-router-dom";
 const ProductComponent = () => {
   const products = useSelector((state) => state.productReducer.products);
   const [open, setOpen] = useState(false);
   const [qty, setQty] = useState(1);
   const [inputs, setInputs] = useState();
   const dispatch = useDispatch();
+
+  const navigate = useNavigate();
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -46,9 +50,9 @@ const ProductComponent = () => {
   }
 
   function handleAddToCart(product) {
-    console.log(qty);
-    console.log(product);
-    const data = { product: product.id };
+    const data = { product: product.id, quantity: qty };
+    dispatch({ type: Actions.UPDATE_CART, payload: data });
+    setQty(1);
   }
 
   function handleQuantity(e) {}
