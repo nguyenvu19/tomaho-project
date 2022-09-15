@@ -13,7 +13,7 @@ import { useSelector } from "react-redux";
 import "./index.css";
 const CartComponent = () => {
   const cart = useSelector((state) => state.cartReducer.cart);
-  console.log(cart);
+
   return (
     <>
       <TableContainer component={Paper}>
@@ -31,26 +31,30 @@ const CartComponent = () => {
           </TableHead>
           <TableBody>
             {cart &&
-              cart.map((product) => {
+              cart.map((cart) => {
+                if (cart) {
+                  cart.quantity += 1;
+                  console.log(cart);
+                }
                 return (
                   <TableRow
-                    key={product.id}
+                    key={cart.product.id}
                     sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
                   >
-                    <TableCell component="th" scope="product" id={product.id}>
-                      {product.id}
+                    <TableCell component="th" scope="cart" id={cart.id}>
+                      {cart.product.id}
                     </TableCell>
-                    <TableCell align="center">{product.name}</TableCell>
-                    <TableCell align="center">{product.price}</TableCell>
+                    <TableCell align="center">{cart.product.name}</TableCell>
+                    <TableCell align="center">{cart.product.price}</TableCell>
                     <TableCell align="center">
                       <img
-                        src={product.image}
+                        src={cart.product.image}
                         width="40px"
                         height="40px"
-                        alt={product.name}
+                        alt={cart.product.name}
                       />
                     </TableCell>
-                    <TableCell align="center">{product.tax}</TableCell>
+                    <TableCell align="center">{cart.product.tax}</TableCell>
                   </TableRow>
                 );
               })}
