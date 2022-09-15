@@ -50,7 +50,7 @@ const ProductComponent = () => {
   }
 
   function handleAddToCart(product) {
-    const data = { product: product.id, quantity: qty };
+    const data = { product: product, quantity: qty };
     dispatch({ type: Actions.UPDATE_CART, payload: data });
     setQty(1);
   }
