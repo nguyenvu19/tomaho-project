@@ -8,7 +8,8 @@ export function* productWatcher() {
 function* workerAddNewProduct(action) {
   try {
     const product = yield select((state) => state.productReducer.products);
-    console.log(product);
+    console.log(action.payload);
+    product.push(action.payload)
   } catch (error) {
     console.log("error");
   }

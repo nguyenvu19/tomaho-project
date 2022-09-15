@@ -15,28 +15,27 @@ import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-
+import AddIcon from "@mui/icons-material/Add";
+import RemoveIcon from "@mui/icons-material/Remove";
+import Input from "antd/lib/input/Input";
+import "./index.css";
 const ProductComponent = () => {
   const products = useSelector((state) => state.productReducer.products);
   const [open, setOpen] = useState(false);
-  const [inputs, setInputs] = useState({
-    id: "",
-    name: "",
-    image: "",
-    price: "",
-    tax: "",
-  });
+  const [qty, setQty] = useState(1);
+  const [inputs, setInputs] = useState();
   const dispatch = useDispatch();
   const handleClickOpen = () => {
     setOpen(true);
   };
-
   const handleClose = () => {
     setOpen(false);
   };
+
   const handleAddProduct = (e) => {
     setOpen(false);
-    dispatch(inputs);
+    dispatch({ type: "CREATE_NEW_PRODUCT", payload: inputs });
+    console.log(dispatch.payload);
   };
 
   function handleInput(e) {
@@ -46,27 +45,42 @@ const ProductComponent = () => {
     setInputs((state) => ({ ...state, [nameInput]: value }));
   }
 
+  function handleAddToCart(product) {
+    console.log(qty);
+    console.log(product);
+    const data = { product: product.id };
+  }
+
+  function handleQuantity(e) {}
+
+  function handleUp(e) {
+    let cloneProduct = [...products];
+    // console.log(
+    //   cloneProduct.map((value) => {
+    //     console.log(value.id.toString());
+    //     return value === value.id;
+    //   })
+    // );
+    cloneProduct.map((value) => {
+      console.log(value.id);
+      console.log(e.target.id);
+      if (e.target.id == value.id) {
+        setQty((pre) => pre + 1);
+      }
+    });
+  }
+  function handleDown(e) {
+    if (qty > 1) {
+      setQty((pre) => pre - 1);
+    }
+  }
   return (
     <div className="container">
       {/* modal add product */}
       <div>
-        <Button variant="outlined" onClick={handleClickOpen}>
-          Add product
-        </Button>
         <Dialog open={open} onClose={handleClose}>
           <DialogTitle>Add product</DialogTitle>
           <DialogContent>
-            <TextField
-              autoFocus
-              margin="dense"
-              id="id"
-              name="id"
-              label="ID"
-              type="text"
-              fullWidth
-              variant="standard"
-              onChange={handleInput}
-            />
             <TextField
               autoFocus
               margin="dense"
@@ -124,30 +138,78 @@ const ProductComponent = () => {
           <TableHead>
             <TableRow>
               <TableCell>ID </TableCell>
-              <TableCell align="right">Name</TableCell>
-              <TableCell align="right">Image&nbsp;</TableCell>
-              <TableCell align="right">Price&nbsp;</TableCell>
-              <TableCell align="right">Tax&nbsp;</TableCell>
+              <TableCell align="center">Name</TableCell>
+              <TableCell align="center">Price</TableCell>
+              <TableCell align="center">Image</TableCell>
+              <TableCell align="center">Tax(%)</TableCell>
+              <TableCell align="center">Mount</TableCell>
+              <TableCell align="center">Add to Cart</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {products.map((product) => (
-              <TableRow
-                key={product.id}
-                sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
-              >
-                <TableCell component="th" scope="product">
-                  {product.id}
-                </TableCell>
-                <TableCell align="right">{product.name}</TableCell>
-                <TableCell align="right">{product.price}</TableCell>
-                <TableCell align="right">{product.image}</TableCell>
-                <TableCell align="right">{product.tax}</TableCell>
-              </TableRow>
-            ))}
+            {products &&
+              products.map((product) => {
+                return (
+                  <TableRow
+                    key={product.id}
+                    sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
+                  >
+                    <TableCell component="th" scope="product" id={product.id}>
+                      {product.id}
+                    </TableCell>
+                    <TableCell align="center">{product.name}</TableCell>
+                    <TableCell align="center">{product.price}</TableCell>
+                    <TableCell align="center">
+                      <img
+                        src={product.image}
+                        width="40px"
+                        height="40px"
+                        alt={product.name}
+                      />
+                    </TableCell>
+                    <TableCell align="center">{product.tax}</TableCell>
+                    <TableCell align="center">
+                      <Button onClick={handleUp} id={product.id}>
+                        <AddIcon />
+                      </Button>
+                      <Input
+                        value={qty}
+                        type="text"
+                        readOnly
+                        onChange={(e) => handleQuantity(e)}
+                        id="amount"
+                        name="amount"
+                        autoFocus
+                        size="small"
+                        fullWidth={false}
+                      />
+                      <Button onClick={handleDown} id={product.id}>
+                        <RemoveIcon />
+                      </Button>
+                    </TableCell>
+                    <TableCell align="center">
+                      <Button
+                        variant="contained"
+                        onClick={() => handleAddToCart(product)}
+                        color="success"
+                        id={product.id}
+                      >
+                        Add to cart
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
           </TableBody>
         </Table>
       </TableContainer>
+      <br></br>
+
+      <h2>Add new Product</h2>
+      <br></br>
+      <Button variant="contained" color="success" onClick={handleClickOpen}>
+        Add new product
+      </Button>
     </div>
   );
 };
